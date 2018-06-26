@@ -14,13 +14,18 @@ import tensorflow as tf
 
 import utils
 
+
 DATA_FILE = 'data/birth_life_2010.txt'
 
 # Step 1: read in the data
 data, n_samples = utils.read_birth_life_data(DATA_FILE)
 
 # Step 2: create Dataset and iterator
+a = data[:,0]
+b_ = data[:,1]
 dataset = tf.data.Dataset.from_tensor_slices((data[:,0], data[:,1]))
+dataset = dataset.shuffle(100000).repeat().batch(3)
+# dataset = dataset.batch(1)
 
 iterator = dataset.make_initializable_iterator()
 X, Y = iterator.get_next()
@@ -28,6 +33,7 @@ X, Y = iterator.get_next()
 # Step 3: create weight and bias, initialized to 0
 w = tf.get_variable('weights', initializer=tf.constant(0.0))
 b = tf.get_variable('bias', initializer=tf.constant(0.0))
+
 
 # Step 4: build model to predict Y
 Y_predicted = X * w + b
@@ -46,13 +52,17 @@ with tf.Session() as sess:
     writer = tf.summary.FileWriter('./graphs/linear_reg', sess.graph)
     
     # Step 8: train the model for 100 epochs
-    for i in range(100):
+    for i in range(10):
         sess.run(iterator.initializer) # initialize the iterator
         total_loss = 0
+        idx = 0
         try:
             while True:
-                _, l = sess.run([optimizer, loss]) 
+                _, l, X_, Y_ = sess.run([optimizer, loss, X, Y])
                 total_loss += l
+                idx += 1
+
+                print ("Epoch {} idx {} >>> X: {} {},  Y: {} {} ".format(i, idx, X_ , type(X_),  Y_, type(Y_)))
         except tf.errors.OutOfRangeError:
             pass
             

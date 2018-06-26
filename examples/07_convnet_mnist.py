@@ -103,7 +103,7 @@ class ConvNet(object):
         '''
         # 
         with tf.name_scope('loss'):
-            entropy = tf.nn.softmax_cross_entropy_with_logits(labels=self.label, logits=self.logits)
+            entropy = tf.nn.softmax_cross_entropy_with_logits_v2(labels=self.label, logits=self.logits)
             self.loss = tf.reduce_mean(entropy, name='loss')
     
     def optimize(self):

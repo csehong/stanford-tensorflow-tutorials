@@ -87,8 +87,11 @@ def word2vec(dataset):
         writer.close()
 
 def gen():
-    yield from word2vec_utils.batch_gen(DOWNLOAD_URL, EXPECTED_BYTES, VOCAB_SIZE, 
+
+    x =  word2vec_utils.batch_gen(DOWNLOAD_URL, EXPECTED_BYTES, VOCAB_SIZE,
                                         BATCH_SIZE, SKIP_WINDOW, VISUAL_FLD)
+
+    yield from x
 
 def main():
     dataset = tf.data.Dataset.from_generator(gen, 

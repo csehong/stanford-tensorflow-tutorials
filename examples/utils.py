@@ -2,7 +2,8 @@ import os
 import gzip
 import shutil
 import struct
-import urllib
+import urllib.request
+
 
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
@@ -35,8 +36,8 @@ def read_birth_life_data(filename):
     lifes = [float(line[2]) for line in data]
     data = list(zip(births, lifes))
     n_samples = len(data)
-    data = np.asarray(data, dtype=np.float32)
-    return data, n_samples
+    data2 = np.asarray(data, dtype=np.float32)
+    return data2, n_samples
 
 def download_one_file(download_url, 
                     local_dest, 
@@ -111,6 +112,7 @@ def read_mnist(path, flatten=True, num_train=55000):
     ((train_imgs, train_labels), (test_imgs, test_labels))
     """
     imgs, labels = parse_data(path, 'train', flatten)
+    c = (labels.shape[0])
     indices = np.random.permutation(labels.shape[0])
     train_idx, val_idx = indices[:num_train], indices[num_train:]
     train_img, train_labels = imgs[train_idx, :], labels[train_idx, :]
